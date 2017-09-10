@@ -1,0 +1,453 @@
+AWS-CLI COMMAND REFERENCE:
+
+(1) Create a Table--:>
+       
+      Synopsis-->    create-table
+                          --attribute-definitions <value>
+                          --table-name <value>
+                          --key-schema <value>
+                         [--local-secondary-indexes <value>]
+                         [--global-secondary-indexes <value>]   
+                          --provisioned-throughput <value>
+                         [--stream-specification <value>]
+                         [--cli-input-json <value>]
+                         [--generate-cli-skeleton <value>]
+   
+      Command-->  aws dynamodb create-table --attribute-definitions <value> --table-name <value> --key-schema <value> --provisioned-throughput <value>
+                             example:-- aws dynamodb create-table --attribute-definitions AttributeName=SrNum,AttributeType=N --key-schema AttributeName=SrNum,KeyType=HASH --provisioned-throughput ReadCapacityUnits=5,WriteCapacityUnits=5
+ 
+(2) Insert Data into the Table-->  
+
+     --> Single Item: Inserting single item(entry) in the table 
+
+     Synopsis-->    put-item
+                        --table-name <value>
+                        --item <value>
+                       [--expected <value>]
+                       [--return-values <value>]
+                       [--return-consumed-capacity <value>]
+                       [--return-item-collection-metrics <value>]
+                       [--conditional-operator <value>]
+                       [--condition-expression <value>]
+                       [--expression-attribute-names <value>]
+                       [--expression-attribute-values <value>]
+                       [--cli-input-json <value>]
+                       [--generate-cli-skeleton <value>]
+
+    
+      Command-->  aws dynamodb put-item --table-name <value> --item <file/attribute> --return-consumed-capacity TOTAL
+                             example:-- aws dynamodb put-item --table-name TestData --item {"SrNum":{"N":"1"},"Name":{"S":"Akshay"}} --return-consumed-capacity TOTAL
+
+
+    -->Multiple Items:
+
+      Synopsis-->    batch-write-item
+                          --request-items <value>
+                         [--return-consumed-capacity <value>] 
+                         [--return-item-collection-metrics <value>]
+                         [--cli-input-json <value>] 
+                         [--generate-cli-skeleton <value>]
+
+      Command-->  aws dynamodb batch-write-item --request-items file://request-items.json
+                             example:-- aws dynamodb batch-write-item --request-items file://request-items.json --return-consumed-capacity TOTAL
+                                   here are the contents of that file
+                                 
+                                {  
+                                    "TestData": [
+                                          {
+                                             "PutRequest": { 
+                                                 "Items": {
+                                                        "SrNum": {"N":"1"},
+                                                         "Name":{"S":"Akshay"},
+                                                         "Gender":{"S":"Male"},
+                                                         "Copmany":{"S":"Quixote"} 
+                                                             }
+                                                    }       
+                                           },  
+                                          
+                                          {
+                                             "PutRequest": { 
+                                                 "Items": {
+                                                        "SrNum": {"N":"1"},
+                                                         "Name":{"S":"Akshay"},
+                                                         "Gender":{"S":"Male"},
+                                                         "Copmany":{"S":"Quixote"} 
+                                                             }
+                                                       }       
+                                                } 
+                                         ]
+                                  }
+
+
+(3) Fetch data from DynamoDB-->
+
+     -->>Single-Item:
+   
+      Synopsis-->    get-item
+                          --table-name <value>
+                          --key <value>
+                         [--attributes-to-get <value>]
+                         [--consistent-read | --no-consistent-read]
+                         [--return-consumed-capacity <value>]
+                         [--projection-expression <value>]
+                         [--expression-attribute-names <value>]
+                         [--cli-input-json <value>]
+                         [--generate-cli-skeleton <value>]
+  
+      Command-->  aws dynamodb get-item --table-name <value> --key file://key.json
+                             example:-- aws dynamodb get-item --table-name TestData --key file://key.json
+                                  here are the contents of that file
+
+                                   { 
+                                      "SrNum":{"N":"1"}                                   
+                                   }                    
+
+                                   
+      -->>Multiple-Items:
+
+      Synopsis-->   get-item
+                         --table-name <value>
+                         --key <value>
+                        [--attributes-to-get <value>] 
+                        [--consistent-read | --no-consistent-read]
+                        [--return-consumed-capacity <value>]
+                        [--projection-expression <value>]
+                        [--expression-attribute-names <value>] 
+                        [--cli-input-json <value>]
+                        [--generate-cli-skeleton <value>]
+
+      Command-->  aws dynamodb batch-get-item --request-items file://request-item.json
+                             example:-- aws dynamodb batch-get-item --request-items file://request-item.json
+                                 here are the contents of that file
+
+                                {
+                                   "TestData": {
+                                       "Keys": [
+                                             {
+                                                "SrNum":{"N":"1"}
+                                             },
+                                            
+                                             {
+                                                "SrNum":{"N":"2"}
+                                             },
+
+                                             {
+                                                "SrNum":{"N":"3"}
+                                             }
+                                      
+                                     ],
+                                      "ProjetionExpression":"Name"
+                                   }
+                               }
+
+                                     
+(4) Delete items and tables-->
+
+      --->Delete-Item(Single-Item)
+
+      Synopsis-->   delete-item
+                         --table-name <value>
+                         --key <value>
+                        [--expected <value>]
+                        [--conditional-operator <value>]
+                        [--return-values <value>]
+                        [--return-consumed-capacity <value>] 
+                        [--return-item-collection-metrics <value>]
+                        [--condition-expression <value>]
+                        [--expression-attribute-names <value>] 
+                        [--expression-attribute-values <value>] 
+                        [--cli-input-json <value>] 
+                        [--generate-cli-skeleton <value>]
+
+      Command-->  aws dynamodb delete-item --table-name <value> --key file://key.json 
+                             example:-- aws dynamodb delete-item --table-name TestData --key file://key.json
+                                  here are the contents of that file
+                                   
+                                   {
+                                       "SrNum":{"N":"1"}
+                                   }
+
+                                
+      -->Delete-Items(Multiple-Items)
+
+      Synopsis-->    batch-write-item
+                          --request-items <value>
+                         [--return-consumed-capacity <value>] 
+                         [--return-item-collection-metrics <value>]
+                         [--cli-input-json <value>] 
+                         [--generate-cli-skeleton <value>]
+
+      Command-->  aws dynamodb batch-write-item --request-items file://request-items.json 
+                             example:-- aws dynamodb batch-write-item --request-items file://request-items.json
+                                here are the contents of that file
+                                 
+                                {  
+                                    "TestData": [
+                                          {
+                                             "PutRequest": { 
+                                                 "Items": {
+                                                        "SrNum": {"N":"1"},
+                                                         "Name":{"S":"Akshay"},
+                                                         "Gender":{"S":"Male"},
+                                                         "Copmany":{"S":"Quixote"} 
+                                                             }
+                                                    }       
+                                           },  
+                                          
+                                          {
+                                             "PutRequest": { 
+                                                 "Items": {
+                                                        "SrNum": {"N":"1"},
+                                                         "Name":{"S":"Akshay"},
+                                                         "Gender":{"S":"Male"},
+                                                         "Copmany":{"S":"Quixote"} 
+                                                             }
+                                                       }       
+                                                } 
+                                         ]
+                                  }
+
+                            
+      -->>Delete-Table:
+
+      Synopsis-->   delete-table
+                       --table-name <value>
+                      [--cli-input-json <value>]
+                      [--generate-cli-skeleton <value>]
+   
+      Command-->   aws dynamadb delete-table --table-name <value>
+                              example:-- aws dynamodb delete-table--table-name TestData
+
+
+(5) Update Items and Tables-->
+
+      -->>Update-Item:
+      
+      Synonpsis-->   update-item
+                          --table-name <value>
+                          --key <value>
+                         [--attribute-updates <value>]
+                         [--expected <value>]
+                         [--conditional-operator <value>]
+                         [--return-values <value>]
+                         [--return-consumed-capacity <value>] 
+                         [--return-item-collection-metrics <value>]
+                         [--update-expression <value>]
+                         [--condition-expression <value>]
+                         [--expression-attribute-names <value>]
+                         [--expression-attribute-values <value>]
+                         [--cli-input-json <value>]
+                         [--generate-cli-skeleton <value>]
+
+      Coommand-->  aws dynamodb update-item --table-name <value> --key file://key.json --update-expression "SET #config = :newconfig" --expression-attribute-names file://expression-attribute-names.json --expression-attribute-values file://expression-attribute-values.json --return-values ALL_NEW 
+                               example:-- aws dynamodb update-item --table-name TestData --key file://key.json --update-expression "SET #N=:newName, #C=:comp" --expression-attribute-names file://expression-attribute-names.json --expression-attribute-values file://expression-attribute-values.json --return-values ALL_NEW 
+                                   here are the contents of the file key.json
+                                    {
+                                       "SrNum":{"N":"1"}
+                                    }
+                                     
+                                   here are the contents of the file expression-attributes-names.json   
+                                     {
+                                        "#N":"Name", "C":"Company"
+                                     }
+               
+                                   here are the contents of the file expression-attributes-values.json
+                                     {
+                                        ":newName":{"S":"AG"},
+                                        ":comp":{"S":"quixote"}                          
+                                     }
+
+
+      -->>Update-table:
+
+      Synopsis-->    update-table
+                        [--attribute-definitions <value>]
+                         --table-name <value>
+                        [--provisioned-throughput <value>]
+                        [--global-secondary-index-updates <value>]
+                        [--stream-specification <value>]
+                        [--cli-input-json <value>]
+                        [--generate-cli-skeleton <value>]
+     
+      Command-->  aws dynamodb update-table --table-name <value> --provisioned-throughput ReadCapacityUnits=5,WriteCapacityUnits=5 
+                             example:-- aws dynamodb update-table --table-name TestData --provisioned-throughput ReadCapacityUnits=5,WriteCapacityUnits=5
+
+
+      -->>Update-time-to-live:
+
+      Synopsis-->    update-time-to-live
+                          --table-name <value>
+                          --time-to-live-specification <value>
+                         [--cli-input-json <value>]
+                         [--generate-cli-skeleton <value>]
+
+      Command-->  aws dynamodb update-time-to-live --table-name <value> --time-lo-live-specifications <value>
+              example:-- aws dynamodb update-time-to-live TestData --time-to-live-specifications {"AttributeName":"TimeToLive", "Enabled":"True"}
+
+
+(6) Describe and list tables-->
+
+      -->>Describe-tables:
+  
+      Synopsis-->    describe-table
+                          --table-name <value>
+                        [--cli-input-json <value>]
+                        [--generate-cli-skeleton <value>]    
+           
+      Command-->  aws dynamodb describe-table --table-name <value>
+                             example:-- aws dynamodb describe-table --table-name TestData
+
+
+      -->>Describe-limits(AccountMaxWriteCapacityUnits,AccountMaxReadCapacityUnits,TableMaxWriteCapacityUnits,TableMaxReadCapacityUnits):
+
+      Synopsis-->    describe-limits
+                        [--cli-input-json <value>]
+                        [--generate-cli-skeleton <value>]
+
+      Command-->   aws dynamodb describe-limits 
+                              example:-- aws dynamodb describe-limits 
+
+
+      -->>Describe-time-to-live(TimeToLiveDescription):
+ 
+      Synopsis-->    describe-time-to-live
+                          --table-name <value>
+                        [--cli-input-json <value>]
+                        [--generate-cli-skeleton <value>] 
+
+      Command-->   aws dynamodb describe-time-to-live --table-name <value>
+                              example:-- aws dynamodb describe-time-to-live --table-name TestData
+
+
+      -->>List-tables:
+            
+      Synopsis-->     list-tables
+                         [--cli-input-json <value>] 
+                         [--starting-token <value>]
+                         [--page-size <value>]
+                         [--max-items <value>]
+                         [--generate-cli-skeleton <value>]
+
+      Command-->   aws dynamodb list-tables 
+                              example:-- aws dynamodb list-tables 
+
+
+(7)Tag, UnTag and list tags of resources:-->
+
+      -->>Tag a resource:
+           
+      Synopsis-->    tag-resource
+                          --resource-arn <value>
+                          --tags <value>
+                         [--cli-input-json <value>]
+                         [--generate-cli-skeleton <value>]
+
+      Command-->   aws dynamodb tag-resource --resource-arn <value> --tags <value>
+                              example:-- aws dynamodb tag-resource --resource-arn <amazon_resource_name> --tags {"key":"string", "value":"string"}
+
+  
+      -->>Untag a resource:
+            
+      Synopsis-->    untag-resource
+                          --resource-arn <value>
+                          --tag-keys <value> 
+                         [--cli-input-json <value>]
+                         [--generate-cli-skeleton <value>]
+
+      Command-->   aws dynamodb untag-resource --resource-arn- <value> --tag-keys <value/file>
+                              example:-- aws dynamodb untag-resource --resource-arn- <amazon_resource_name> --tag-keys <file://tag-keys.json>
+
+
+      -->>List tags of resources:
+
+      Synopsis-->    list-tags-of-resource 
+                          --resource-arn <value>
+                         [--next-token <value>] 
+                         [--cli-input-json <value>]
+                         [--generate-cli-skeleton <value>]       
+
+      Command-->   aws dynamodb list-tags-of-resources --resource-arn <amazon_resource_name>             
+                              example:-- aws dynamodb list-tags-of-resources --resource-arn <amazon_resource_name>
+
+
+(8)Query, Scan and Wait commands:::
+
+      -->>Query(finds the item based on primary key values):
+ 
+      Synopsis-->    query 
+                          --table-name <value>
+                         [--index-name <value>]
+                         [--select <value>]
+                         [--attributes-to-get <value>]
+                         [--consistent-read | --no-consistent-read]
+                         [--key-conditions <value>]
+                         [--query-filter <value>]
+                         [--conditional-operator <value>]
+                         [--scan-index-forward | --no-scan-index-forward]
+                         [--return-consumed-capacity <value>]
+                         [--projection-expression <value>]
+                         [--filter-expression <value>]
+                         [--key-condition-expression <value>]
+                         [--expression-attribute-names <value>]
+                         [--expression-attribute-values <value>]
+                         [--cli-input-json <value>]
+                         [--starting-token <value>]
+                         [--page-size <value>]
+                         [--max-items <value>]
+                         [--generate-cli-skeleton <value>]
+
+     Command-->   aws dynamodb query --table-name <value> --projection-expression "Attribute" --key-condition-expression "Attribute = :referenceValue" --ecpression-attribute-values file://expression-attributes.json
+                              example:--  aws dynamodb query --table-name TestData --projection-expression "SongTitle" --key-condition-expression "Artist = :v1" --expression-attribute-values file://expression-attributes.json 
+                                    Arguments for expression-attribute-values are stored in json file.
+                                       
+                                {
+                                   ":v1":{"S":"no one you know"}
+                                }
+
+
+      -->>Scan(It returns one or more items and item attributes):
+
+      Synopsis-->    scan
+                          --table-name <value>
+                         [--index-name <value>]
+                         [--attributes-to-get <value>]
+                         [--select <value>]
+                         [--scan-filter <value>]
+                         [--conditional-operator <value>]
+                         [--return-consumed-capacity <value>]
+                         [--total-segments <value>] 
+                         [--segment <value>]
+                         [--projection-expression <value>]
+                         [--filter-expression <value>]
+                         [--expression-attribute-names <value>]
+                         [--expression-attribute-values <value>]
+                         [--consistent-read | --no-consistent-read]
+                         [--cli-input-json <value>]
+                         [--starting-token <value>] 
+                         [--page-size <value>]
+                         [--max-items <value>]
+                         [--generate-cli-skeleton <value>]   
+
+      Command-->   aws dynamodb scan --table-name <value> --filter-expression "Attribute = :referenceValue" --projection-expression "key references" --expression-attributes-names file://expression-attributes-names.json -expression-attribute-values file://expression-attributes-values.json
+                              example:-- aws dynamodb scan --table-name TestData --filter-expression "Name = :n"  --projection-expression " #SN, #CP" --expression-attributes-names file://expression-attributes-names.json -expression-attribute-values file://expression-attributes-values.json
+                                   Arguments for expression-attribute-names and expression-attribute-values are stored in json file.
+                            
+                                   {
+                                      "#SN": "SrNum", "#CP":"Company"
+                                   }  
+
+                                   {
+                                       ":n":{"S": "Akshay Gupta"}
+                                   }
+
+
+      -->>Wait(Wait until a particular condition is satisfied):
+
+             (a) table-exists:--  
+                  aws dynamodb table-exists --table-name <value>
+                  example:-- aws dynamodb table-exists --table-name TestData
+
+             (b) table-not-exists:--
+                   aws dynamodb table-exists --table-name <value>
+                   example:-- aws dynamodb table-not-exists --table-name TestData
+                                        
